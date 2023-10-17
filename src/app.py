@@ -55,7 +55,25 @@ class MainPage(customtkinter.CTkFrame):
         self.city_data_label = customtkinter.CTkLabel(master=self.main_weather_frame_background, text=city_data, fg_color="transparent", font=("Calibri", 18))
         self.city_data_label.place(relx=0.5, rely=0.75, anchor=tkinter.CENTER) 
         
-
+        self.current_day_forecast_left = customtkinter.CTkFrame(master=master, fg_color=fg_colors[0], width=150, height=230, corner_radius=8)
+        self.current_day_forecast_left.place(relx=0.18, rely=0.25, anchor=tkinter.CENTER)
+        
+        self.current_day_forecast_right = customtkinter.CTkFrame(master=master, fg_color=fg_colors[0], width=150, height=230, corner_radius=8)
+        self.current_day_forecast_right.place(relx=0.82, rely=0.25, anchor=tkinter.CENTER)
+        
+        current_forecast = asyncio.run(get_current_forecast(city))
+        i = 0
+        
+        for hourly in current_forecast.hourly:
+            text = hourly.time.strftime("%H:%M")+"\n"+str(hourly.temperature)+"°C\n"+hourly.kind.emoji
+            if i == 8:
+                break
+            elif i<4:
+                customtkinter.CTkLabel(master=self.current_day_forecast_left, text=text, fg_color=fg_colors[1], width=80, height=40, corner_radius=8, font=("Calibri", 12)).place(relx=0.5, rely=0.25*(i+1)-0.12, anchor=tkinter.CENTER)
+            else:
+                customtkinter.CTkLabel(master=self.current_day_forecast_right, text=text, fg_color=fg_colors[1], width=80, height=40, corner_radius=8, font=("Calibri", 12)).place(relx=0.5, rely=0.25*(i-3)-0.12, anchor=tkinter.CENTER)  
+            i += 1    
+            
     def change_appearance_mode(self, choice: str) -> None:
         global appearance_mode
         appearance_mode = choice
@@ -63,7 +81,6 @@ class MainPage(customtkinter.CTkFrame):
 
     def get_fg_color_by_color_theme(self, color_theme: str) -> tuple:
         return COLORS[COLOR_THEMES.index(color_theme)]
-        
 
 class App(customtkinter.CTk):
     def __init__(self) -> None:
