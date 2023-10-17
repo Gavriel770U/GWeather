@@ -1,1 +1,3 @@
 Dark mode for MacOS
+Update installers to be better
+Add forecasts for other days of the week
